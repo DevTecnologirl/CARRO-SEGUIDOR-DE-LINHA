@@ -1,0 +1,159 @@
+// Definindo os pinos, valores e funções
+#define pinSensorEsq A1   //Pino analógico sensor Esq.
+#define pinSensorDir A0   //Pino analógico sensor Dir.
+#define ConfSensEsq 300   //Valor que o sensor esquerdo entende como preto
+#define ConfSensDir 300   //Valor que o sensor direito entende como preto
+
+#define MotorPinE 4     //Direção motor 1 (Esquerdo)
+#define MotorSpeedPinE 5  //Velocidade motor 1
+#define MotorSpeedPinD 6  //Velocidade motor 2
+#define MotorPinD 7     //Direção motor 2 (Direito)
+
+int motorEsq(int modo);
+int motorDir(int modo);
+
+void setup(){
+  //Definindo os pinos do motor A
+  pinMode(MotorPinE, OUTPUT);
+  pinMode(MotorSpeedPinE, OUTPUT);
+
+
+  //Definindo os pinos do motor B
+  pinMode(MotorPinD, OUTPUT);
+  pinMode(MotorSpeedPinD, OUTPUT);
+ 
+  //Iniciando o Monitor serial
+  //Serial.begin(9600);   
+  
+  //Deixando os motores parados
+  motorEsq(1);
+  motorDir(1);
+}
+
+void loop(){
+  int valE = analogRead(pinSensorEsq);
+  int valD = analogRead(pinSensorDir);
+
+  //Serial.print (valE);
+  //Serial.print (valD);
+  
+  // Branco nos dois lados, seguindo reto
+  if (analogRead(pinSensorEsq) <= ConfSensEsq && analogRead(pinSensorDir) <= ConfSensDir) {
+  //Serial.print("\nEntrou no if segue reto");
+  motorEsq(1);
+  motorDir(1);
+}else{
+  
+  // Preto no esquerdo branco no direito, virando pra Esq.
+  if (analogRead(pinSensorEsq) >= ConfSensEsq && analogRead(pinSensorDir) <= ConfSensDir) {
+ // Serial.print("\nVIRANDO P/ ESQUERDA.");
+  motorEsq(0);
+  motorDir(1); 
+  delay(1000);
+}else{
+  
+  // Branco no esquerdo preto no direito, virando pra Dir.
+  if (analogRead(pinSensorEsq) <= ConfSensEsq && analogRead(pinSensorDir) >= ConfSensDir) {
+ // Serial.print("\nVIRANDO´P/ DIREITA");
+  motorEsq(1);
+  motorDir(0);
+  delay(1000);
+}else{
+  // Preto nos dois, tem algo errado nos sensores ou pista
+  if (analogRead(pinSensorEsq) >= ConfSensEsq && analogRead(pinSensorDir) >= ConfSensDir) {
+  //Serial.print("\nEntrou no if dois pretos");
+  motorEsq(0);
+  motorDir(0);
+}
+} 
+} 
+}
+
+}// FIM DO LOOP
+
+//---------------------------MOTOR ESQUERDO--------------------
+
+int motorEsq(int modo){
+  int vel = 175;
+  int velDev = 123;
+  //Serial.print("\nEntrou no motorEsq");
+  
+  switch(modo){
+    
+  case 0:{
+  digitalWrite(MotorPinE, HIGH);
+  analogWrite(MotorSpeedPinE, 0);
+  //Serial.print("\nMotor Esq. Parado");
+  break;}
+  
+  case 1:{
+  digitalWrite(MotorPinE, HIGH);
+  analogWrite(MotorSpeedPinE, vel);
+  //Serial.print("\nMotor Esq. frente");
+  break;}
+    
+ /* case 2:{
+  digitalWrite(MotorPinE, LOW);
+  analogWrite(MotorSpeedPinE, vel);
+  Serial.print("\nMotor Esq. tras");
+  break;} */
+  
+  case 2:{
+  digitalWrite(MotorPinE, HIGH);
+  analogWrite(MotorSpeedPinE, velDev);
+  //Serial.print("\nMotor Esq. frente Dev.");
+  break;}
+  /*  
+  case 4:{
+  digitalWrite(MotorPinE, LOW);
+  analogWrite(MotorSpeedPinE, velDev);
+  Serial.print("\nMotor Esq. tras Dev.");
+  break;}*/
+  
+  }//FIM SWITCH
+  }
+  
+
+  //-------------------------------MOTOR DIREITO-----------------------------
+  
+  
+int motorDir(int modo){
+  int vel = 160;
+  int velDev = 100;
+  //Serial.print("\nEntrou no motorDir");
+  
+  switch(modo){
+    
+  case 0:{
+  digitalWrite(MotorPinD, HIGH);
+  analogWrite(MotorSpeedPinD, 0);
+  //Serial.print("\nMotor Dir. Parado");
+  break;}
+  
+  case 1:{
+  digitalWrite(MotorPinD, HIGH);
+  analogWrite(MotorSpeedPinD, vel);
+  //Serial.print("\nMotor Dir. frente");
+  break;}
+    
+  /*case 2:{
+  digitalWrite(MotorPinD, LOW);
+  analogWrite(MotorSpeedPinD, vel);
+  Serial.print("\nMotor Dir. tras");
+  break;} */
+  
+  case 2:{
+  digitalWrite(MotorPinD, HIGH);
+  analogWrite(MotorSpeedPinD, velDev);
+  //Serial.print("\nMotor Dir. frente Dev.");
+  break;}
+    
+  /*case 4:{
+  digitalWrite(MotorPinD, LOW);
+  analogWrite(MotorSpeedPinD, velDev);
+  Serial.print("\nMotor Dir. tras Dev.");
+  break;}*/
+  
+  }//FIM SWITCH
+  }
+
